@@ -103,6 +103,7 @@ function readImages(imgArray){
 		    	console.error(err.message);
 		    	reject(err);
 		    }
+		    _.each(imgArray, function(img){ fs.unlinkSync(img); });
 			resolve(imgFiles);
 		});
 		
@@ -124,7 +125,7 @@ app.post('/frames', upload.single('file'), function(req, res){
 	//Grab Frame Files as Base 64 Array
 	then(readImages).
 	//Send Files Back in Response as JSON string
-	then( function (images) {
+	then( function (images, imgArray) {
 		res.json(images);
 	}).
 	catch ( function(err){
