@@ -15,13 +15,15 @@ The microservice has one POST route,
 
 `/frames`
 
-This route requires three body parameters in a request:
+This route requires four body parameters in a request:
 
 `frameCount //How many frames you want returned`
 
 `secondsBetween //How many seconds between each frame returned`
 
 `file //Video File for frames to be exported from`
+
+`token //random hash to authorize your app's access`
 
 In the response body, there will be a json array of base64 encoded images which are the frames exported.
 
@@ -31,7 +33,7 @@ To run the app, first run the command
 
 then run,
 
-`node index.js`
+`TOKEN=random_hash node index.js`
 
 
 Requirements
