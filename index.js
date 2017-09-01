@@ -115,31 +115,32 @@ function readImages(imgArray){
 app.post('/frames', upload.single('file'), function(req, res){ 
 	
 	if(req.body.token == undefined || req.body.token != token) {
-		res.status(401).send();
-		return;
+		res.status(401).send( {
+			message: "Invalid Token"
+		});
+	} else {
+		//Save Video to /tmp/
+		var videoFile, videoName, imgHash, secondsBetween, frameCount;
+		videoFile = req.file;
+		secondsBetween = req.body.secondsBetween;
+		frameCount = req.body.frameCount;
+
+		videoName = req.file.filename;
+		imgHash = hash.digest('image' + Date.now());
+
+		//Extract Frames
+		extractFrames(videoName, imgHash, secondsBetween, frameCount).
+		//Grab Frame Files as Base 64 Array
+		then(readImages).
+		//Send Files Back in Response as JSON string
+		then( function (images, imgArray) {
+			res.json(images);
+		}).
+		catch ( function(err){
+			console.log(err);
+			res.status(500).send();
+		});
 	}
-
-	//Save Video to /tmp/
-	var videoFile, videoName, imgHash, secondsBetween, frameCount;
-	videoFile = req.file;
-	secondsBetween = req.body.secondsBetween;
-	frameCount = req.body.frameCount;
-
-	videoName = req.file.filename;
-	imgHash = hash.digest('image' + Date.now());
-
-	//Extract Frames
-	extractFrames(videoName, imgHash, secondsBetween, frameCount).
-	//Grab Frame Files as Base 64 Array
-	then(readImages).
-	//Send Files Back in Response as JSON string
-	then( function (images, imgArray) {
-		res.json(images);
-	}).
-	catch ( function(err){
-		console.log(err);
-		res.status(500).send();
-	});
 
 });
 
