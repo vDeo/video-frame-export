@@ -17,6 +17,8 @@ const hash = require('custom-hash');
 hash.configure({maxLength: 10});
 const _FILEPATH = 'tmp/';
 
+const token = process.env.TOKEN;
+
 function getMediaInfo(filePath) {
 	return new Promise(function(resolve, reject) {
 		mediainfo(filePath)
@@ -111,6 +113,12 @@ function readImages(imgArray){
 }
 
 app.post('/frames', upload.single('file'), function(req, res){ 
+	
+	if(req.body.token == undefined || req.body.token != token) {
+		res.status(401).send();
+		return;
+	}
+
 	//Save Video to /tmp/
 	var videoFile, videoName, imgHash, secondsBetween, frameCount;
 	videoFile = req.file;
